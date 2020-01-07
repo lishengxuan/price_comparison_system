@@ -1,3 +1,9 @@
 .logo{
     width: 100px;
 }
+.main{
+    background: #f3f3f3;
+    width: 730px;
+    margin: 0 auto;
+    overflow: hidden;
+}
