@@ -20,3 +20,14 @@ def login():
         return render_template("login.html")
     else:
         return "登录"
+
+
+@app.route("/regist", methods=["GET", "POST"])
+def regist():
+    """
+    注册
+    """
+    if request.method == "GET":
+        return render_template("regist.html")
+    else:
+        return "注册"
