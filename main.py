@@ -3,9 +3,10 @@ from sqlalchemy import or_
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 import config
-from models import User
+from models import User, SearchRecord
 from exts import db
-from public_tools import login_required
+from public_tools import login_required, run
+from settings import HEAD
 
 app = Flask(__name__)
 # 导入配置文件
@@ -93,5 +94,29 @@ def my_context_processor():
     return {}
 
 
-if __name__ == '__main__':
-    app.run()
+@app.route("/search_goods")
+@login_required
+def search_goods():
+    """
+    搜索商品保存到数据库中
+    """
+    keyword = request.args.get("keyword")
+    keyword = str(keyword)
+    if keyword:
+        # 判断用户是否登录
+        if session.get("user_id"):
+            user = db.session.query(User).filter(User.id == session.get("user_id")).first()
+            if user:
+                # 创建搜索记录
+                search_record = SearchRecord()
+                search_record.user_id = user.id
+                search_record.keyword = keyword
+                db.session.add(search_record)
+                db.session.commit()
+                db.session.flush()
+                search_record_id = str(search_record.id)
+                run(keyword, HEAD, search_record_id)
+                return "爬虫完成，稍后到搜索记录中查看！"
+    else:
+        return "请输入关键字"
+
