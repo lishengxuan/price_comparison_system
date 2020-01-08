@@ -3,7 +3,7 @@ from flask_migrate import MigrateCommand, Migrate
 
 from exts import db
 from main import app
-
+from models import User
 manage = Manager(app)
 # 使用migrate绑定app
 migrate = Migrate(app, db)
