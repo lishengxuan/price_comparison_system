@@ -18,7 +18,7 @@
 <body>
 <nav class="navbar navbar-default">
     <div class="container">
-        <div class="navbar-header" ><h3 align="center">京东比价系统</h3></div>
+        <div class="navbar-header" ><h3 align="center">京东商品比价系统</h3></div>
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
@@ -35,8 +35,8 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#">首页 <span class="sr-only">(current)</span></a></li>
-                <li><a href="#">详情页</a></li>
+                <li><a href="/">首页<span class="sr-only">(current)</span></a></li>
+                <li><a href="{{ url_for("search_detail") }}">搜索记录</a></li>
             </ul>
             <form class="navbar-form navbar-left">
                 <div class="form-group">

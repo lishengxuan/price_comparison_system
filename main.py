@@ -1,10 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from sqlalchemy import or_
 from werkzeug.security import generate_password_hash, check_password_hash
-
+from functools import wraps
 import config
 from models import User
 from exts import db
+from public_tools import login_required
 
 app = Flask(__name__)
 # 导入配置文件
@@ -15,6 +16,12 @@ db.init_app(app)
 @app.route("/")
 def index():
     return render_template("index.html")
+
+
+@app.route("/search_detail")
+@login_required
+def search_detail():
+    return "搜索详情"
 
 
 @app.route("/login", methods=["GET", "POST"])
