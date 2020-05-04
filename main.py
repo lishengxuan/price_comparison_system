@@ -1,5 +1,6 @@
+import pymongo
 from flask import Flask, render_template, request, redirect, url_for, session, flash
-from sqlalchemy import or_
+from sqlalchemy import or_, text
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 import config
@@ -25,7 +26,8 @@ def search_detail():
     if request.method == "GET":
         # 查询当前用户的搜索记录
         user_id = session.get("user_id")
-        search_list = db.session.query(SearchRecord).filter(SearchRecord.user_id == user_id).all()
+        search_list = db.session.query(SearchRecord).filter(SearchRecord.user_id == user_id).order_by(
+            text("-search_time")).all()
         return render_template("search_list.html", search_list=search_list)
 
 
@@ -123,3 +125,18 @@ def search_goods():
                 return redirect(url_for("search_detail"))
     else:
         return "请输入关键字"
+
+
+@app.route("/search_goods_detail")
+@login_required
+def search_goods_detail():
+    """查询送所记录详情"""
+    search_id = request.args.get("id")
+    # 创建mongodb对象
+    myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+    mydb = myclient['runoobdb']
+    mycol = mydb[str(search_id)]
+    info_list = []
+    for x in mycol.find():
+        info_list.append(x)
+    return render_template("info_list.html", info_list=info_list)

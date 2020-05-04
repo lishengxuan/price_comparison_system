@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}搜索列表页{% endblock %}
+{% block title %}搜索信息详情页{% endblock %}
 {% block head %}
 {% endblock %}
 {% block main %}
@@ -35,18 +35,29 @@
     <table class="gridtable">
         <tr>
             <th>序号</th>
-            <th>关键词</th>
-            <th>搜索时间</th>
-            <th>搜索详情链接</th>
-            {% for item in search_list %}
+            <th>价格</th>
+            <th>名称</th>
+            <th>评分</th>
+            <th>图片</th>
+            <th>购买链接</th>
+            {% for item in info_list %}
                 <tr>
                     <td>{{ loop.index }}</td>
-                    <td>{{ item.keyword }}</td>
-                    <td>{{ item.search_time }}</td>
-                    <td><a target="_blank" href="http://127.0.0.1:5000/search_goods_detail?id={{ item.id }}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;进入</a>
-                    </td>
+
+                    <td>{{ item.price }}</td>
+                    <td>{{ item.name }}</td>
+                    {% if item.purchase_index %}
+                        <td>{{ item.purchase_index }}</td>
+                    {% else %}
+                        <td>无评分</td>
+                    {% endif %}
+                    {% if item.img %}
+                        <td><img src="{{ item.img }}"></td>
+                    {% else %}
+                        <td>无图片</td>
+                    {% endif %}
+                    <td><a href="{{ item.url }}">购买链接</a></td>
                 </tr>
             {% endfor %}
-        </tr>
     </table>
 {% endblock %}
