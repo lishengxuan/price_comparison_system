@@ -94,5 +94,6 @@ def run(keyword, head, set_name):
         first_good_list = craw_jd_goods(first_url, head)
         last_good_dict = craw_jd_goods(last_url, head)
         good_list = first_good_list + last_good_dict
+        print(len(good_list))
     # 将数据保存到mongodb中
     save_data_in_mongodb(set_name, good_list)

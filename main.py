@@ -22,7 +22,11 @@ def index():
 @app.route("/search_detail")
 @login_required
 def search_detail():
-    return "搜索详情"
+    if request.method == "GET":
+        # 查询当前用户的搜索记录
+        user_id = session.get("user_id")
+        search_list = db.session.query(SearchRecord).filter(SearchRecord.user_id == user_id).all()
+        return render_template("search_list.html", search_list=search_list)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -116,7 +120,6 @@ def search_goods():
                 db.session.flush()
                 search_record_id = str(search_record.id)
                 run(keyword, HEAD, search_record_id)
-                return "爬虫完成，稍后到搜索记录中查看！"
+                return redirect(url_for("search_detail"))
     else:
         return "请输入关键字"
-

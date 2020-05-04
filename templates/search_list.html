@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}搜索列表页{% endblock %}
+{% block head %}
+{% endblock %}
+{% block main %}
+    {##}
+    <!-- CSS goes in the document HEAD or added to your external stylesheet -->
+    <style type="text/css">
+        table.gridtable {
+            font-family: verdana, arial, sans-serif;
+            font-size: 15px;
+            color: #333333;
+            border-width: 1px;
+            border-color: #666666;
+            border-collapse: collapse;
+        }
+
+        table.gridtable th {
+            border-width: 2px;
+            padding: 30px;
+            border-style: solid;
+            border-color: #666666;
+            background-color: #dedede;
+        }
+
+        table.gridtable td {
+            border-width: 2px;
+            padding: 30px;
+            border-style: solid;
+            border-color: #666666;
+            background-color: #ffffff;
+        }
+    </style>
+    <!-- Table goes in the document BODY -->
+    <table class="gridtable">
+        <tr>
+            <th>序号</th>
+            <th>关键词</th>
+            <th>搜索时间</th>
+            <th>搜索详情链接</th>
+            {% for item in search_list %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ item.keyword }}</td>
+                    <td>{{ item.search_time }}</td>
+                    <td><a target="_blank" href="https://www.baidu.com">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;进入</a></td>
+                </tr>
+            {% endfor %}
+        </tr>
+    </table>
+{% endblock %}
