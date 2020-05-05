@@ -1,3 +1,5 @@
+import json
+
 import pymongo
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from sqlalchemy import or_, text
@@ -137,6 +139,51 @@ def search_goods_detail():
     mydb = myclient['runoobdb']
     mycol = mydb[str(search_id)]
     info_list = []
-    for x in mycol.find():
+    for x in mycol.find().sort("price", -1):
         info_list.append(x)
-    return render_template("info_list.html", info_list=info_list)
+    return render_template("info_list.html", info_list=info_list, search_id=search_id)
+
+
+@app.route("/sector_chart")
+@login_required
+def get_sector_chart():
+    """获取扇形图"""
+    search_id = request.args.get("id")
+    # 创建mongodb对象
+    myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+    mydb = myclient['runoobdb']
+    mycol = mydb[str(search_id)]
+    info_list = []
+    # 0-2000个数
+    first_count = 0
+    # 2000-4000个数
+    second_count = 0
+    # 4000-6000个数
+    third_count = 0
+    # 6000-8000个数
+    fourth_count = 0
+    # 8000以上个数
+    fifth_list = 0
+    for x in mycol.find().sort("price", -1):
+        info_list.append(x)
+    # 商品总个数
+    goods_count = len(info_list)
+    # 数据分析（将价位分为0-2000，2000-4000。。。。8000-以上,以及8000以上的5个等级）
+    for i in info_list:
+        if 0 < i.get("price") <= 2000:
+            first_count += 1
+        elif 2000 < i.get("price") <= 4000:
+            second_count += 1
+        elif 4000 < i.get("price") <= 6000:
+            third_count += 1
+        elif 6000 < i.get("price") <= 8000:
+            fourth_count += 1
+        else:
+            fifth_list += 1
+            # 扇形图返回的数据
+    sector_chart_list = [['0-2000', float(first_count / goods_count)],
+                         ['2000-4000', float(second_count / goods_count)],
+                         ['4000-6000', float(third_count / goods_count)],
+                         ['6000-8000', float(fourth_count / goods_count)],
+                         ['8000以上', float(fifth_list / goods_count)]]
+    return render_template("sector_chart.html", result_json=json.dumps(sector_chart_list))
