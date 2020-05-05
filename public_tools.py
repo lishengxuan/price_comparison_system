@@ -15,7 +15,6 @@ def login_required(func):
             return func(*args, **kwargs)
         else:
             return redirect(url_for("login"))
-
     return wrapper
 
 
@@ -45,6 +44,7 @@ def craw_jd_goods(url, head):
     # 指定编码方式，不然会出现乱码
     r.encoding = 'utf-8'
     html = etree.HTML(r.text)
+    print(r.text)
     # 定位到每一个商品标签li
     datas = html.xpath('//li[contains(@class,"gl-item")]')
     good_list = []
@@ -59,7 +59,7 @@ def craw_jd_goods(url, head):
         # 商品购买链接
         url = data.xpath('div/div[@class="p-commit"]/strong/a/attribute::href')
         # 商品图片
-        img = data.xpath('div/div[@class="p-img"]/a/img/attribute::source-data-lazy-img')
+        img = data.xpath('div/div[@class="p-img"]/a/img/attribute::src')
         # 这个if判断用来处理那些价格可以动态切换的商品，小米MIX2，他们的价格位置在属性中放了一个最低价
         if len(price) == 0:
             price = data.xpath('div/div[@class="p-price"]/strong/@data-price')

@@ -170,16 +170,17 @@ def get_sector_chart():
     goods_count = len(info_list)
     # 数据分析（将价位分为0-2000，2000-4000。。。。8000-以上,以及8000以上的5个等级）
     for i in info_list:
-        if 0 < i.get("price") <= 2000:
-            first_count += 1
-        elif 2000 < i.get("price") <= 4000:
-            second_count += 1
-        elif 4000 < i.get("price") <= 6000:
-            third_count += 1
-        elif 6000 < i.get("price") <= 8000:
-            fourth_count += 1
-        else:
-            fifth_list += 1
+        if i.get("price"):
+            if 0 < i.get("price") <= 2000:
+                first_count += 1
+            elif 2000 < i.get("price") <= 4000:
+                second_count += 1
+            elif 4000 < i.get("price") <= 6000:
+                third_count += 1
+            elif 6000 < i.get("price") <= 8000:
+                fourth_count += 1
+            else:
+                fifth_list += 1
             # 扇形图返回的数据
     sector_chart_list = [['0-2000', float(first_count / goods_count)],
                          ['2000-4000', float(second_count / goods_count)],
