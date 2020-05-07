@@ -15,6 +15,7 @@ def login_required(func):
             return func(*args, **kwargs)
         else:
             return redirect(url_for("login"))
+
     return wrapper
 
 
@@ -44,7 +45,6 @@ def craw_jd_goods(url, head):
     # 指定编码方式，不然会出现乱码
     r.encoding = 'utf-8'
     html = etree.HTML(r.text)
-    print(r.text)
     # 定位到每一个商品标签li
     datas = html.xpath('//li[contains(@class,"gl-item")]')
     good_list = []
@@ -80,20 +80,20 @@ def run(keyword, head, set_name):
     """主函数"""
     good_list = []
     # 每种商品的total为100页，所以要构造100*2个url
-    for i in range(1, 2):
+    for i in range(2):
         # 休眠一秒，防止网络延迟，xpath获取不到页面数据
         time.sleep(1)
-        print(i)
         # 每页的URL分为前30条数据和后30条数据
-        first_url = f'https://search.jd.com/Search?keyword={keyword}&enc=utf-8&qrst=1&rt=1&stop=1&vt=2&page=' + str(
+        first_url = 'https://search.jd.com/Search?keyword={}&enc=utf-8&qrst=1&rt=1&stop=1&vt=2&page='.format(
+            keyword) + str(
             2 * i - 1)
         now_time = time.time()
         now_time_format = '%.5f' % now_time
-        last_url = f'https://search.jd.com/s_new.php?keyword={keyword}&enc=utf-8&qrst=1&rt=1&stop=1&vt=2&page=' + str(
+        last_url = 'https://search.jd.com/s_new.php?keyword={}&enc=utf-8&qrst=1&rt=1&stop=1&vt=2&page='.format(
+            keyword) + str(
             2 * i) + '&s=' + str(48 * i - 20) + '&scrolling=y&log_id=' + str(now_time_format)
         first_good_list = craw_jd_goods(first_url, head)
-        last_good_dict = craw_jd_goods(last_url, head)
-        good_list = first_good_list + last_good_dict
-        print(len(good_list))
+        last_good_list = craw_jd_goods(last_url, head)
+        good_list += first_good_list + last_good_list
     # 将数据保存到mongodb中
     save_data_in_mongodb(set_name, good_list)

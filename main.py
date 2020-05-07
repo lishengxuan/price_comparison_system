@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 import pymongo
 from flask import Flask, render_template, request, redirect, url_for, session, flash
@@ -119,6 +120,7 @@ def search_goods():
                 search_record = SearchRecord()
                 search_record.user_id = user.id
                 search_record.keyword = keyword
+                search_record.search_time = datetime.now()
                 db.session.add(search_record)
                 db.session.commit()
                 db.session.flush()
